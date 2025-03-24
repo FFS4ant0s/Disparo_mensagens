@@ -44,10 +44,11 @@ for contato in contatos:
 
         print(f"✅ Mensagem enviada para {contato}")
 
+        # Aguardar 5 minutos (300 segundos) antes de enviar para o próximo contato
+        time.sleep(300)
+
     except Exception as e:
         print(f"❌ Erro ao enviar para {contato}: {str(e)}")
-
-    time.sleep(5)  # Pequeno delay entre mensagens
 
 # Fechar navegador
 driver.quit()
