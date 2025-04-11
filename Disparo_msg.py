@@ -12,43 +12,50 @@ driver.get("https://web.whatsapp.com")
 input("Escaneie o QR Code e pressione ENTER...")
 
 # Lista de contatos no formato internacional sem '+'
-contatos = ["556199973110", "556196862374"]
-mensagem = "Olá! Essa é uma mensagem automática do WhatsApp."
+contatos = ["5561982627402", "5561985977274"]
+mensagem = (
+    "Olá! Me chamo Fernando, sou desenvolvedor e sempre tive um fascínio por tecnologia e inovação.  "
+    "Percebi que sua empresa trabalha com Desenvolvimento de Software, e queria saber se vocês estão precisando "
+    "de alguém que tenha força de vontade, sede de aprendizado e esteja disposto a resolver problemas de verdade. "
+    "Tenho alguns projetos que mostram minha habilidade em resolver problemas reais, e adoraria trocar uma ideia "
+    "para entender como posso ajudar sua empresa."
+)
 
 for contato in contatos:
     try:
-        # Abrir conversa com o número usando link direto
         driver.get(f"https://web.whatsapp.com/send?phone={contato}")
-        time.sleep(10)  # Tempo para carregar a conversa
+        time.sleep(10)
 
-        # Esperar a caixa de mensagem estar disponível
-        chat_box = WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='main']/footer/div[1]/div/span/div/div[2]/div[1]/div[2]/div[1]/p"))
-        )
+        try:
+            # Esperar a caixa de mensagem estar disponível
+            chat_box = WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//*[@id='main']/footer/div[1]/div/span/div/div[2]/div[1]/div[2]/div[1]/p"))
+            )
+            chat_box.click()
+            time.sleep(1)
 
-        # Clicar na caixa de mensagem
-        chat_box.click()
-        time.sleep(1)  # Pequena pausa para garantir que o campo está ativo
+            chat_box.send_keys(mensagem)
+            time.sleep(1)
 
-        # Digitar a mensagem
-        chat_box.send_keys(mensagem)
-        time.sleep(1)
+            send_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//*[@id='main']/footer/div[1]/div/span/div/div[2]/div[2]/button/span"))
+            )
+            send_button.click()
 
-        # Encontrar e clicar no botão de enviar
-        send_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//*[@id='main']/footer/div[1]/div/span/div/div[2]/div[2]/button/span"))
-        )
-        send_button.click()
+            print(f"✅ Mensagem enviada para {contato}")
+        except Exception as e:
+            print(
+                f"⚠️ Não foi possível enviar mensagem para {contato}: {str(e)}")
+            continue
 
-        print(f"✅ Mensagem enviada para {contato}")
-
-        # Aguardar 5 minutos (300 segundos) antes de enviar para o próximo contato
+        # Aguarda 5 minutos
         time.sleep(300)
 
     except Exception as e:
-        print(f"❌ Erro ao enviar para {contato}: {str(e)}")
+        print(f"❌ Erro inesperado com {contato}: {str(e)}")
+        continue
 
 # Fechar navegador
 driver.quit()
